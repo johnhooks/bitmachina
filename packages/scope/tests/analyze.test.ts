@@ -1,4 +1,4 @@
-import { analyze } from "../src/index.js";
+import { analyze } from "../src/analyze.js";
 
 import * as waves from "./mock/waves.js";
 

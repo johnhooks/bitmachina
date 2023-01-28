@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 
 import { calcPoints } from "./calc-points.js";
 
+/**
+ * @public
+ */
 type Props = {
 	analyser: AnalyserNode;
 	disabled?: boolean;
@@ -13,6 +16,9 @@ type Props = {
 	stroke?: string;
 };
 
+/**
+ * @public
+ */
 export function Scope({
 	analyser,
 	disabled = false,

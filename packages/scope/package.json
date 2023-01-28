@@ -5,9 +5,9 @@
 	"license": "MIT",
 	"private": true,
 	"scripts": {
-		"build": "../../scripts/build-pkg.js",
+		"build:pkg": "../../scripts/build-pkg.js",
 		"build:esm": "../../scripts/esm.js",
-		"build:tsc": "../../scripts/compile.js",
+		"build:compile": "../../scripts/compile.js",
 		"build:types": "../../scripts/build-types.js",
 		"check": "tsc --build ./src && tsc --project ./tests",
 		"clean": "rimraf ./{dist,temp}",

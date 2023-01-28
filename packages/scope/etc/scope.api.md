@@ -4,8 +4,12 @@
 
 ```ts
 
+/// <reference types="react" />
+
+// Warning: (ae-forgotten-export) The symbol "Props" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export function analyze(data: Uint8Array): void;
+export function Scope({ analyser, disabled, width, height, fill, stroke, }: Props): JSX.Element;
 
 // (No @packageDocumentation comment for this package)
 
