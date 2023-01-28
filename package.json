@@ -1,0 +1,52 @@
+{
+	"name": "bitmachina",
+	"version": "0.1.0",
+	"license": "MIT",
+	"private": true,
+	"author": "John Hooks <bitmachina@outlook.com> (https://johnhooks.io/)",
+	"homepage": "https://github.com/johnhooks/bitmachina#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/johnhooks/bitmachina.git"
+	},
+	"bugs": "https://github.com/johnhooks/bitmachina/issues",
+	"type": "module",
+	"sideEffects": false,
+	"workspaces": [
+		"./apps/*",
+		"./packages/*"
+	],
+	"scripts": {
+		"lint": "eslint --ext .js,.ts .",
+		"prepare": "husky install",
+		"release": "shipjs prepare",
+		"test": "vitest run"
+	},
+	"devDependencies": {
+		"@microsoft/api-documenter": "7.19.28",
+		"@microsoft/api-extractor": "7.33.8",
+		"@testing-library/dom": "8.20.0",
+		"@testing-library/jest-dom": "5.16.5",
+		"@types/node": "18.11.18",
+		"@types/testing-library__jest-dom": "5.14.5",
+		"@typescript-eslint/eslint-plugin": "5.48.2",
+		"@typescript-eslint/parser": "5.48.2",
+		"eslint": "8.32.0",
+		"eslint-config-prettier": "8.6.0",
+		"eslint-import-resolver-typescript": "3.5.3",
+		"eslint-plugin-import": "2.27.5",
+		"eslint-plugin-jest-dom": "4.0.3",
+		"eslint-plugin-testing-library": "5.9.1",
+		"husky": "8.0.3",
+		"jsdom": "21.0.0",
+		"lint-staged": "13.1.0",
+		"prettier": "2.8.3",
+		"rimraf": "4.1.1",
+		"shipjs": "0.25.1",
+		"ts-node": "10.9.1",
+		"tslib": "2.4.1",
+		"typescript": "4.9.4",
+		"vite": "4.0.4",
+		"vitest": "0.27.2"
+	}
+}

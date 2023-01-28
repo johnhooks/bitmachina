@@ -1,0 +1,11 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "paths": {
+      "@bitmachina/scope": ["../../packages/scope/src/index.ts"]
+    }
+  },
+  "references": [{ "path": "../../packages/scope/src" }]
+}
