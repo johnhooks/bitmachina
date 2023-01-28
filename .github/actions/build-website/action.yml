@@ -10,4 +10,4 @@ runs:
 
     - name: Build website
       shell: bash
-      run: yarn website:build
+      run: cd ./apps/website && pnpm build
