@@ -12,14 +12,11 @@
 			"program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
 			"args": ["run", "${relativeFile}", "--threads=false"],
 			"outputCapture": "std",
-      "internalConsoleOptions": "openOnSessionStart",
+			"internalConsoleOptions": "openOnSessionStart",
 			"autoAttachChildProcesses": true,
 			"justMyCode": true,
-      "skipFiles": [
-        "${workspaceRoot}/node_modules/**/*",
-        "<node_internals>/**/*"
-      ],
-		  "smartStep": true,
+			"skipFiles": ["${workspaceRoot}/node_modules/**/*", "<node_internals>/**/*"],
+			"smartStep": true,
 			"console": "integratedTerminal",
 			"disableOptimisticBPs": true
 		}

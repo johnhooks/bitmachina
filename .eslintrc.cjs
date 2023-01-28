@@ -5,6 +5,8 @@ module.exports = {
 		"plugin:@typescript-eslint/recommended",
 		"plugin:import/recommended",
 		"plugin:import/typescript",
+		"plugin:react/recommended",
+		"plugin:react-hooks/recommended",
 		"prettier",
 	],
 	plugins: ["@typescript-eslint"],
@@ -22,6 +24,7 @@ module.exports = {
 				pathGroupsExcludedImportTypes: ["builtin"],
 			},
 		],
+		"react/react-in-jsx-scope": ["off"],
 	},
 	overrides: [
 		{
@@ -31,12 +34,12 @@ module.exports = {
 	],
 	settings: {
 		"import/parsers": {
-			"@typescript-eslint/parser": [".ts"],
+			"@typescript-eslint/parser": [".ts", ".tsx"],
 		},
 		"import/resolver": {
 			typescript: {
 				alwaysTryTypes: true,
-				project: ["./src", "./website"],
+				project: ["./apps/website", "./packages/scope"],
 			},
 		},
 	},

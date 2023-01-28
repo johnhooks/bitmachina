@@ -1,12 +1,12 @@
 {
 	"compilerOptions": {
-		"rootDir": ".",
-		"outDir": "../build",
-
 		"lib": ["DOM", "DOM.Iterable", "ES2018"],
 		"target": "ES2018",
 		"module": "ES2015",
 		"moduleResolution": "node",
+
+		"jsx": "react-jsx",
+		"jsxImportSource": "react",
 
 		"declaration": true,
 		"composite": true,
@@ -24,6 +24,10 @@
 		"skipLibCheck": true,
 
 		"alwaysStrict": true,
-		"newLine": "lf"
+		"newLine": "lf",
+
+		"paths": {
+			"@bitmachina/scope": ["./packages/scopes/src/index.ts"]
+		}
 	}
 }
