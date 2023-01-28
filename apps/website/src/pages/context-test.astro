@@ -1,0 +1,39 @@
+<script>
+	const context = new AudioContext();
+	const oscillator = new OscillatorNode(context, {
+		type: "sine",
+		frequency: 440,
+	});
+
+	oscillator.start();
+
+	const gainNode = new GainNode(context, {
+		gain: 0.5,
+	});
+
+	oscillator.connect(gainNode);
+	gainNode.connect(context.destination);
+
+	let isRunning = false;
+
+	window.addEventListener("DOMContentLoaded", (event) => {
+		const startBtn = document.querySelector("#start-btn");
+		if (startBtn) {
+			startBtn.addEventListener("click", () => {
+				if (isRunning) {
+					console.log("stop");
+					context.suspend();
+				} else {
+					console.log("start");
+					context.resume();
+				}
+				isRunning = !isRunning;
+			});
+		}
+	});
+</script>
+
+<div>
+	<h1>Hello <code>AudioContext</code>!</h1>
+	<button id="start-btn">Start</button>
+</div>
