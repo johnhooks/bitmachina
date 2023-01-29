@@ -87,9 +87,11 @@ importers:
     specifiers:
       '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
+      lit-html: ^2.6.1
       react: 18.2.0
       react-dom: 18.2.0
     dependencies:
+      lit-html: 2.6.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
@@ -1222,6 +1224,10 @@ packages:
     dependencies:
       '@types/jest': 29.4.0
     dev: true
+
+  /@types/trusted-types/2.0.2:
+    resolution: {integrity: sha512-F5DIZ36YVLE+PN+Zwws4kJogq47hNgX3Nx6WyDJ3kcplxyke3XIzB8uK5n/Lpm1HBsbGzd6nmGehL8cPekP+Tg==}
+    dev: false
 
   /@types/unist/2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
@@ -4178,6 +4184,12 @@ packages:
       through: 2.3.8
       wrap-ansi: 7.0.0
     dev: true
+
+  /lit-html/2.6.1:
+    resolution: {integrity: sha512-Z3iw+E+3KKFn9t2YKNjsXNEu/LRLI98mtH/C6lnFg7kvaqPIzPn124Yd4eT/43lyqrejpc5Wb6BHq3fdv4S8Rw==}
+    dependencies:
+      '@types/trusted-types': 2.0.2
+    dev: false
 
   /load-json-file/4.0.0:
     resolution: {integrity: sha512-Kx8hMakjX03tiGTLAIdJ+lL0htKnXjEZN6hk/tozf/WOuYGdZBJrZ+rCJRbVCugsjB3jMLn9746NsQIf5VjBMw==}

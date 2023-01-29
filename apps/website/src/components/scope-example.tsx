@@ -1,13 +1,25 @@
 import { Scope } from "@bitmachina/scope";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export function ScopeExample() {
 	const [disabled, setDisabled] = useState(true);
 	const [frequency, setFrequency] = useState(440);
 	const [gain, setGain] = useState(0.5);
+	const [cutoff, setCutoff] = useState(22050);
+	const [resonance, setResonance] = useState(0.0001);
 	const [type, setType] = useState<OscillatorType>("sine");
 
 	const audioContext = useRef(new AudioContext());
+
+	const osc = useRef( new OscillatorNode(audioContext.current, {
+		type,
+		frequency,
+	}))
+
+
+	useEffect(() => {
+		audioContext.current.suspend();
+	}, []);
 
 	const oscillator = useMemo<OscillatorNode>(() => {
 		const oscillator = new OscillatorNode(audioContext.current, {
@@ -18,12 +30,13 @@ export function ScopeExample() {
 		return oscillator;
 	}, [type]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	const analyserNode = useMemo<AnalyserNode>(() => {
-		return new AnalyserNode(audioContext.current, {
-			smoothingTimeConstant: 1,
-			fftSize: 32768,
+	const filterNode = useMemo<BiquadFilterNode>(() => {
+		return new BiquadFilterNode(audioContext.current, {
+			type: "lowpass",
+			frequency: cutoff,
+			Q: resonance,
 		});
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const gainNode = useMemo<GainNode>(() => {
 		return new GainNode(audioContext.current, {
@@ -31,98 +44,136 @@ export function ScopeExample() {
 		});
 	}, [gain]);
 
+	const analyserNode = useMemo<AnalyserNode>(() => {
+		return new AnalyserNode(audioContext.current, {
+			smoothingTimeConstant: 1,
+			fftSize: 32768,
+		});
+	}, []);
+
 	useEffect(() => {
-		if (!oscillator || !gainNode || !analyserNode) return;
+		if (!disabled) {
+			const context = audioContext.current;
 
-		const context = audioContext.current;
-		oscillator.connect(gainNode);
-		gainNode.connect(analyserNode);
-		analyserNode.connect(audioContext.current.destination);
+			oscillator.connect(filterNode);
+			filterNode.connect(gainNode);
+			gainNode.connect(analyserNode);
+			analyserNode.connect(audioContext.current.destination);
+			context.resume();
+			console.log("audio resumed");
 
-		return () => {
-			oscillator.disconnect(gainNode);
-			gainNode.disconnect(analyserNode);
-			analyserNode.disconnect(context.destination);
-		};
-	}, [oscillator, analyserNode, gainNode]);
+			return () => {
+				context.suspend();
+				oscillator.disconnect(filterNode);
+				filterNode.disconnect(gainNode);
+				gainNode.disconnect(analyserNode);
+				analyserNode.disconnect(context.destination);
+				console.log("audio suspended");
+			};
+		}
+	}, [disabled]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const width = 512;
 	const height = 256;
 
 	function handleToggle() {
-		setDisabled((disabled) => {
-			const off = !disabled;
-			if (off) {
-				audioContext.current.suspend();
-				console.log("audio suspended");
-			} else {
-				audioContext.current.resume();
-				console.log("audio resumed");
-			}
-			return off;
-		});
+		setDisabled((disabled) => !disabled);
 	}
 
 	return (
 		<>
+			<Scope width={width} height={height} analyserNode={analyserNode} disabled={disabled} />
+
 			<div id="controls">
 				<button id="on-off" onClick={handleToggle}>
 					{disabled ? "Turn On" : "Turn Off"}
 				</button>
 				<div id="led"></div>
 
-				<label htmlFor="osc-type">Oscillator Type</label>
-				<select
-					id="osc-type"
-					onChange={(event) => {
-						setType(event.target.value as OscillatorType);
-					}}
-					value={type}
-				>
-					<option value="sine">Sine</option>
-					<option value="square">Square</option>
-					<option value="sawtooth">Sawtooth</option>
-					<option value="triangle">Triangle</option>
-				</select>
+				<div>
+					<select
+						id="osc-type"
+						onChange={(event) => {
+							setType(event.target.value as OscillatorType);
+						}}
+						value={type}
+					>
+						<option value="sine">Sine</option>
+						<option value="square">Square</option>
+						<option value="sawtooth">Sawtooth</option>
+						<option value="triangle">Triangle</option>
+					</select>
+					<label htmlFor="osc-type">Oscillator Type</label>
+				</div>
 
-				<label htmlFor="frequency">
-					Frequency: <span id="frequencyValue">440</span>
-				</label>
-				<input
-					id="frequency"
-					type="range"
-					min="110"
-					max="1760"
-					step="1"
-					value={frequency}
-					onChange={(event) => {
-						const frequency = parseInt(event.target.value);
-						oscillator.frequency.value = frequency;
-						setFrequency(parseInt(event.target.value));
-					}}
-				/>
+				<div>
+					<input
+						id="frequency"
+						type="range"
+						min="110"
+						max="1760"
+						step="1"
+						value={frequency}
+						onChange={(event) => {
+							const frequency = parseInt(event.target.value);
+							oscillator.frequency.value = frequency;
+							setFrequency(parseInt(event.target.value));
+						}}
+					/>
+					<label htmlFor="frequency">
+						Frequency: <span id="frequencyValue">{frequency}</span>
+					</label>
+				</div>
 
-				<label htmlFor="gain">
-					Input Gain: <span id="gainValue">0.5</span>
-				</label>
-				<input
-					id="gain"
-					type="range"
-					min="0"
-					max="1"
-					step="0.05"
-					value={gain}
-					onChange={(event) => {
-						setGain(parseFloat(event.target.value));
-					}}
-				/>
+				<div>
+					<input
+						id="gain"
+						type="range"
+						min="0"
+						max="1"
+						step="0.05"
+						value={gain}
+						onChange={(event) => {
+							setGain(parseFloat(event.target.value));
+						}}
+					/>
+					<label htmlFor="gain">
+						Input Gain: <span id="gainValue">{gain}</span>
+					</label>
+				</div>
 
-				{/* <label htmlFor="zoom">
-					Zoom: <span id="zoomValue">1</span>
-				</label>
-				<input id="zoom" type="range" min="1" max="256" step="1" value="1" /> */}
+				<div>
+					<input
+						type="range"
+						min="10"
+						max="22050"
+						step="0.1"
+						value={cutoff}
+						onChange={(event) => {
+							const value = parseInt(event.target.value);
+							filterNode.frequency.value = value;
+							setCutoff(value);
+						}}
+					/>
+					<label htmlFor="cutoff">Filter cutoff: {cutoff}</label>
+				</div>
+
+				<div>
+					<input
+						type="range"
+						min="0.0001"
+						max="100"
+						step="0.0001"
+						value={resonance}
+						onChange={(event) => {
+							const value = parseFloat(event.target.value);
+							filterNode.Q.value = value;
+							setResonance(value);
+						}}
+					/>
+					<label htmlFor="resonance">Filter Q: {resonance}</label>
+				</div>
 			</div>
-			<Scope width={width} height={height} analyser={analyserNode} disabled={disabled} />
 		</>
 	);
 }

@@ -2,6 +2,9 @@ import { analyze } from "./analyze.js";
 
 /**
  * TODO Need to do checking to make sure data is actually there before trying to process it.
+ *
+ * TODO keep track of the average peak and valley, it can be used to make sure if the wave form briefly crosses zero that its not misinterpreted as a new wave.
+ *
  */
 
 /**
@@ -14,6 +17,7 @@ type CalcPointsParams = {
 	width: number;
 	height: number;
 };
+
 /**
  * @param data - Data array from AnalyserNode#getFloatTimeDomainData
  * @param width - Width of the canvas element.
@@ -23,7 +27,8 @@ export function calcPoints({ data, width, height }: CalcPointsParams): [number, 
 	const points: [number, number][] = [];
 
 	const waveIndexes = analyze(data);
-	const indexOffset = waveIndexes[1];
+	// TODO this seems pretty optimistic, should do some validation.
+	const indexOffset = waveIndexes[1].start;
 	const segmentWidth = width / frames;
 
 	// Looking back one data point to calculate the first point of the line,

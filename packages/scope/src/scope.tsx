@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
-import { calcPoints } from "./calc-points.js";
+// import { calcPoints } from "./calc-points.js";
+
+import { Analyser } from "./analyze";
 
 /**
  * @public
  */
 type Props = {
-	analyser: AnalyserNode;
+	analyserNode: AnalyserNode;
 	disabled?: boolean;
 
 	width: number;
@@ -20,7 +22,7 @@ type Props = {
  * @public
  */
 export function Scope({
-	analyser,
+	analyserNode,
 	disabled = false,
 	width,
 	height,
@@ -55,14 +57,16 @@ export function Scope({
 		if (!context) throw new Error("Unable to initialize canvas context");
 
 		// Should handle if `frequencyBinCount` changes.
-		const dataArray = new Float32Array(analyser.frequencyBinCount);
+		const dataArray = new Float32Array(analyserNode.frequencyBinCount);
+		const analyser = new Analyser(dataArray);
 
 		// This is just to create a reference we can use in the cleanup callback
 		const running = { value: !disabled };
 
 		const runUntilDisabled = () => {
-			analyser.getFloatTimeDomainData(dataArray);
-			render(canvas, context, dataArray);
+			analyserNode.getFloatTimeDomainData(dataArray);
+			const points = analyser.calcPoints(canvas.width, canvas.height);
+			render(canvas, context, points);
 			if (!running.value) return;
 			requestAnimationFrame(runUntilDisabled);
 		};
@@ -72,7 +76,7 @@ export function Scope({
 		return () => {
 			running.value = false;
 		};
-	}, [analyser, canvasRef, disabled]);
+	}, [analyserNode, canvasRef, disabled]);
 
 	return <canvas ref={canvasRef} width={width} height={height}></canvas>;
 }
@@ -80,21 +84,19 @@ export function Scope({
 function render(
 	canvas: HTMLCanvasElement,
 	context: CanvasRenderingContext2D,
-	dataArray: Float32Array
+	points: [number, number][]
 ): void {
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	context.beginPath();
 
-	const [start, ...rest] = calcPoints({
-		data: dataArray,
-		width: canvas.width,
-		height: canvas.height,
-	});
+	const [start, ...rest] = points;
+	const length = rest.length;
 
+	if (!start) return;
 	context.moveTo(...start);
 
-	for (const point of rest) {
-		context.lineTo(...point);
+	for (let i = 0; i < length; i++) {
+		context.lineTo(...rest[i]);
 	}
 
 	context.stroke();

@@ -9,6 +9,7 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
 	integrations: [react()],
 	vite: {
+		base: process.env.NODE_ENV === "development" ? "/" : "/bitmachina/",
 		resolve: {
 			alias: {
 				"@bitmachina/scope": fileURLToPath(
