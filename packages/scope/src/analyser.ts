@@ -175,7 +175,10 @@ export class Analyser {
 		const points: [number, number][] = [];
 
 		// TODO this seems pretty optimistic, should do some validation.
-		const indexOffset = waveIndexes[1].start;
+
+		const indexOffset = waveIndexes[1]?.start;
+		if (!indexOffset) return [];
+
 		const segmentWidth = width / FRAMES;
 
 		// Looking back one data point to calculate the first point of the line,
@@ -302,7 +305,7 @@ function average(array: number[]): number {
  * this function is always used to push values.
  * @internal
  */
-function push(value: number, array: number[], limit = 10): number[] {
+function push(value: number, array: number[], limit = 30): number[] {
 	if (array.length === limit) {
 		const [, ...tail] = array;
 		return [...tail, value];

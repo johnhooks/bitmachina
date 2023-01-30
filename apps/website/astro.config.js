@@ -7,9 +7,10 @@ import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
+	site: "https://johnhooks.io/",
+	base: "/bitmachina",
 	integrations: [react()],
 	vite: {
-		base: process.env.NODE_ENV === "development" ? "/" : "/bitmachina/",
 		resolve: {
 			alias: {
 				"@bitmachina/scope": fileURLToPath(

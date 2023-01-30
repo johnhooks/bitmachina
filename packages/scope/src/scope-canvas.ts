@@ -1,7 +1,4 @@
-import { calcPoints } from "./calc-points.js";
-
-const defaultWidth = 512;
-const defaultHeight = 256;
+// import { Analyser } from "./analyser.js";
 
 export class Oscilloscope extends HTMLElement {
 	/**
@@ -25,6 +22,9 @@ export class Oscilloscope extends HTMLElement {
 	private _canvas: HTMLCanvasElement;
 	private _context: CanvasRenderingContext2D;
 
+	// private _dataArray: Float32Array | null = null;
+	// private _analyser: Analyser | null = null;
+
 	constructor() {
 		super();
 
@@ -46,40 +46,48 @@ export class Oscilloscope extends HTMLElement {
 		this._renderRoot.appendChild(canvas);
 	}
 
-	public render(dataArray: Float32Array): void {
-		const canvas = this._canvas;
-		const context = this._context;
+	// public connect(analyserNode: AnalyserNode): void {
+	// 	this._dataArray = new Float32Array(analyserNode.frequencyBinCount);
+	// }
 
-		context.fillRect(0, 0, canvas.width, canvas.height);
-		context.beginPath();
+	// public render(dataArray: Float32Array): void {
+	// 	const canvas = this._canvas;
+	// 	const context = this._context;
+	// 	// const analyser = (this._analyser = this._analyser || new Analyser(dataArray)); // TODO, remove hack
 
-		const [start, ...rest] = calcPoints({
-			data: dataArray,
-			width: canvas.width,
-			height: canvas.height,
-		});
+	// 	context.fillRect(0, 0, canvas.width, canvas.height);
+	// 	context.beginPath();
 
-		context.moveTo(...start);
+	// 	const points = analyser.calcPoints(canvas.width, canvas.height);
 
-		for (const point of rest) {
-			context.lineTo(...point);
-		}
+	// 	if (!points) {
+	// 		this._drawFlat();
+	// 		return;
+	// 	}
 
-		context.stroke();
+	// 	const [start, ...rest] = points;
 
-		this._lastRender = window.performance.now();
-	}
+	// 	context.moveTo(...start);
+
+	// 	for (const point of rest) {
+	// 		context.lineTo(...point);
+	// 	}
+
+	// 	context.stroke();
+
+	// 	this._lastRender = window.performance.now();
+	// }
 
 	public resize(width: number, height: number): void {
 		this._width = width;
 		this._height = height;
-		this._resize();
+		this._adjustSize();
 	}
 
 	/**
 	 * Adjust canvas sizing to account for `pixelRatio`
 	 */
-	private _resize(): void {
+	private _adjustSize(): void {
 		const pixelRatio = window.devicePixelRatio;
 		this._canvas.width = this._width * pixelRatio;
 		this._canvas.height = this._height * pixelRatio;
@@ -96,8 +104,8 @@ export class Oscilloscope extends HTMLElement {
 		this._context.fillStyle = this._fill;
 		this._context.strokeStyle = this._stroke;
 		this._context.lineWidth = 4;
-		// Resize canvas
-		this._resize();
+		// Adjust the size of the canvas.
+		this._adjustSize();
 	}
 
 	private _drawFlat() {
@@ -127,13 +135,13 @@ export class Oscilloscope extends HTMLElement {
 			const value = parseInt(newValue);
 			if (!isNaN(value)) {
 				this._width = value;
-				this._resize();
+				this._adjustSize();
 			}
 		} else if (name === "height") {
 			const value = parseInt(newValue);
 			if (!isNaN(value)) {
 				this._height = value;
-				this._resize();
+				this._adjustSize();
 			}
 		} else if (name === "fill") {
 			this._context.fillStyle = newValue;

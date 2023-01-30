@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 // import { calcPoints } from "./calc-points.js";
 
-import { Analyser } from "./analyze";
+import { Analyser } from "./analyser";
 
 /**
  * @public

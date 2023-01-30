@@ -6,10 +6,18 @@
 
 /// <reference types="react" />
 
+// @public
+export type Cycle = {
+    readonly start: number;
+    readonly end: number;
+    readonly high: number;
+    readonly low: number;
+};
+
 // Warning: (ae-forgotten-export) The symbol "Props" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export function Scope({ analyser, disabled, width, height, fill, stroke, }: Props): JSX.Element;
+export function Scope({ analyserNode, disabled, width, height, fill, stroke, }: Props): JSX.Element;
 
 // (No @packageDocumentation comment for this package)
 
