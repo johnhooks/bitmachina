@@ -241,10 +241,6 @@ export class ScopeExample extends Component<Props, State> {
 										onChange={this.handleResonance}
 										srOnly={`value ${Math.floor(this.state.resonance * 100) / 100}`}
 									/>
-									<label htmlFor="resonance">
-										Filter Q
-										<span className="sr-only">value {Math.floor(this.state.resonance)}</span>
-									</label>
 								</p>
 							</fieldset>
 						</form>
