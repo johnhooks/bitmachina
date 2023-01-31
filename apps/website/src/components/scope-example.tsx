@@ -3,6 +3,8 @@ import { Component, type MouseEventHandler, type ChangeEventHandler } from "reac
 
 import "../styles/scope.css";
 
+import { Slider } from "../components/slider";
+
 type Props = {
 	width: number;
 	height: number;
@@ -190,69 +192,59 @@ export class ScopeExample extends Component<Props, State> {
 								</p>
 
 								<p>
-									<label htmlFor="frequency">
-										Frequency
-										<span className="sr-only">{this.state.frequency}</span>
-									</label>
-									<input
+									<Slider
 										id="frequency"
-										type="range"
-										min="110"
-										max="1760"
-										step="1"
+										label="Frequency"
+										min={110}
+										max={1760}
+										step={1}
 										value={this.state.frequency}
 										onChange={this.handleFrequency}
-										style={{ "--track-fill": `${percent(this.state.frequency, 110, 1760)}%` }}
+										srOnly={`value ${this.state.frequency} Hz`}
 									/>
 								</p>
 
 								<p>
-									<label htmlFor="gain">
-										Input Gain
-										<span className="sr-only">{Math.floor(this.state.gain * 100)}%</span>
-									</label>
-									<input
+									<Slider
 										id="gain"
-										type="range"
-										min="0.01"
-										max="1"
-										step="0.05"
+										label="Input Gain"
+										min={0.01}
+										max={1}
+										step={0.05}
 										value={this.state.gain}
 										onChange={this.handleGain}
-										style={{ "--track-fill": `${percent(this.state.gain, 0.01, 1)}%` }}
+										srOnly={`value ${Math.floor(this.state.gain * 100)}`}
 									/>
 								</p>
 
 								<p>
-									<label htmlFor="cutoff">
-										Filter Cutoff Frequency
-										<span className="sr-only">value {this.state.cutoff}</span>
-									</label>
-									<input
-										type="range"
-										min="10"
-										max="22050"
-										step="0.1"
+									<Slider
+										id="cutoff"
+										label="Filter Cutoff Frequency"
+										min={10}
+										max={22050}
+										step={0.1}
 										value={this.state.cutoff}
 										onChange={this.handleCutoff}
-										style={{ "--track-fill": `${percent(this.state.cutoff, 10, 22050)}%` }}
+										srOnly={`value ${this.state.cutoff} Hz`}
 									/>
 								</p>
 
 								<p>
+									<Slider
+										id="resonance"
+										label="Filter Q"
+										min={0.0001}
+										max={50}
+										step={0.0001}
+										value={this.state.resonance}
+										onChange={this.handleResonance}
+										srOnly={`value ${Math.floor(this.state.resonance * 100) / 100}`}
+									/>
 									<label htmlFor="resonance">
 										Filter Q
 										<span className="sr-only">value {Math.floor(this.state.resonance)}</span>
 									</label>
-									<input
-										type="range"
-										min="0.0001"
-										max="50"
-										step="0.0001"
-										value={this.state.resonance}
-										onChange={this.handleResonance}
-										style={{ "--track-fill": `${percent(this.state.resonance, 0.0001, 50)}%` }}
-									/>
 								</p>
 							</fieldset>
 						</form>
@@ -261,8 +253,4 @@ export class ScopeExample extends Component<Props, State> {
 			</main>
 		);
 	}
-}
-
-function percent(value: number, min: number, max: number) {
-	return Math.floor(((value - min) / (max - min)) * 100);
 }

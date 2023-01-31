@@ -17,10 +17,6 @@
 	padding: var(--size-fluid-3);
 	box-shadow: var(--shadow-4);
 
-	&:hover {
-		box-shadow: var(--shadow-6);
-	}
-
 	@media (--motionOK) {
 		animation: var(--animation-fade-in);
 	}
