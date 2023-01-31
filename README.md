@@ -2,25 +2,9 @@
   bitmachina
 </h1>
 
-## 📦 Install
+This monorepo is a scratch pad to explore without the hassle of requiring tooling for each little project.
 
-```sh
-npm install bitmachina
-
-# or
-
-yarn add bitmachina
-```
-
-<!--
-
-## ⚡️ Quick start
-
-## 📚 Documentation
-
-Visit the [full documentation](~TODO~) to know more.
-
--->
+If any package become interesting it might be moved to its own repository.
 
 ## License
 

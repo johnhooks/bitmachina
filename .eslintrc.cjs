@@ -12,6 +12,7 @@ module.exports = {
 	plugins: ["@typescript-eslint"],
 	ignorePatterns: ["*.cjs"],
 	rules: {
+		"prefer-const": ["off"],
 		"import/order": [
 			"error",
 			{
@@ -24,6 +25,7 @@ module.exports = {
 				pathGroupsExcludedImportTypes: ["builtin"],
 			},
 		],
+		"@typescript-eslint/no-unused-vars": ["warn"],
 		"react/react-in-jsx-scope": ["off"],
 	},
 	overrides: [

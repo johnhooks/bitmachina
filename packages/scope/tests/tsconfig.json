@@ -16,5 +16,5 @@
 		"types": ["vitest/globals"]
 	},
 	"include": ["**/*"],
-	"references": [{ "path": "../src" }]
+	"references": [{ "path": "../" }]
 }

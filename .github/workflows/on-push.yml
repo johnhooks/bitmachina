@@ -27,32 +27,6 @@ jobs:
       - name: Build package
         uses: ./.github/actions/build-pkg
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js and Yarn
-        uses: ./.github/actions/node
-
-      - name: Download the build artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: pkg-build-${{ github.run_id }}
-
-      - name: Release if needed
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        shell: bash
-        run: |
-          git config --global user.email "bitmachina@outlook.com"
-          git config --global user.name "John Hooks"
-          yarn run shipjs trigger
-
   website:
     needs: build
     runs-on: ubuntu-latest
@@ -70,7 +44,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./website/dist
+          path: ./apps/website/dist
 
   pages:
     # Only deploy if the string '(website)' is in the commit message. NOTE not a RegExp

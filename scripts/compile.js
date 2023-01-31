@@ -8,7 +8,9 @@ import { exec } from "./utils/exec.js";
 const rootDir = path.resolve(fileURLToPath(new URL(".", import.meta.url)), "../");
 const tscPath = path.join(rootDir, "node_modules/.bin/tsc");
 
-const tscArgs = ["--build", "./src"];
+const tsConfigPath = process.env.CI ? [] : ["./tsconfig.dev.json"];
+
+const tscArgs = ["--build", ...tsConfigPath];
 
 console.log(`tsc ${tscArgs.join(" ")}`);
 

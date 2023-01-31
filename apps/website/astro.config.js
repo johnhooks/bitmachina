@@ -7,6 +7,8 @@ import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
+	site: "https://johnhooks.io/",
+	base: "/bitmachina",
 	integrations: [react()],
 	vite: {
 		resolve: {

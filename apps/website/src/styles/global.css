@@ -1,0 +1,31 @@
+/* the props */
+@import "open-props/postcss/style";
+
+/* optional imports that use the props */
+@import "open-props/postcss/normalize";
+@import "open-props/postcss/buttons";
+
+:root {
+	--max-inline-body: calc(100vw - (var(--size-8) * 2));
+	--brand-bg-gradient: linear-gradient(
+		to bottom,
+		var(--purple-3),
+		var(--violet-3),
+		var(--indigo-3),
+		var(--cyan-3)
+	);
+
+	@media (--md-n-below) {
+		--max-inline-body: calc(100vw - (var(--size-3) * 2));
+	}
+
+	@nest [data-theme="light"] & {
+		--brand-bg-gradient: linear-gradient(
+			to bottom,
+			var(--purple-6),
+			var(--violet-6),
+			var(--indigo-6),
+			var(--cyan-6)
+		);
+	}
+}

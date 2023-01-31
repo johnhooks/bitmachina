@@ -7,5 +7,5 @@
 			"@bitmachina/scope": ["../../packages/scope/src/index.ts"]
 		}
 	},
-	"references": [{ "path": "../../packages/scope/src" }]
+	"references": [{ "path": "../../packages/scope" }]
 }
