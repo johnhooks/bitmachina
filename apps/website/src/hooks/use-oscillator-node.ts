@@ -1,9 +1,9 @@
 import { useRef } from "react";
 
-import { useAudioContext } from "./use-audio-context.js";
+import { useAudio } from "../contexts/audio.js";
 
 export function useOscillatorNode(options: OscillatorOptions): OscillatorNode {
-	const audioContext = useAudioContext();
+	const audioContext = useAudio();
 	const ref = useRef<OscillatorNode | null>(null);
 
 	const getInstance = (): OscillatorNode => {

@@ -1,9 +1,9 @@
 import { useRef } from "react";
 
-import { useAudioContext } from "./use-audio-context.js";
+import { useAudio } from "../contexts/audio.js";
 
 export function useGainNode(options: GainOptions): GainNode {
-	const audioContext = useAudioContext();
+	const audioContext = useAudio();
 	const ref = useRef<GainNode | null>(null);
 
 	const getInstance = (): GainNode => {

@@ -1,252 +1,229 @@
 import { Scope } from "@bitmachina/scope";
-import { Component, type MouseEventHandler, type ChangeEventHandler } from "react";
+import { useState, useEffect, type MouseEventHandler, type ChangeEventHandler } from "react";
 
 import "../styles/scope.css";
 
-import { Slider } from "../components/slider";
+import { useAudio } from "../contexts/audio.js";
+import {
+	useAnalyserNode,
+	useBiquadFilterNode,
+	useGainNode,
+	useOscillatorNode,
+} from "../hooks/index.js";
+
+import { Slider } from "./slider.js";
 
 type Props = {
 	width: number;
 	height: number;
 };
 
-type State = {
-	oscType: OscillatorType;
-	frequency: number;
-	gain: number;
-	cutoff: number;
-	resonance: number;
-	disabled: boolean;
-};
+export function ScopeExample(props: Props) {
+	const [oscType, setOscType] = useState<OscillatorType>("sine");
+	const [frequency, setFrequency] = useState(440);
+	const [gain, setGain] = useState(0.25);
+	const [cutoff, setCutoff] = useState(22050);
+	const [resonance, setResonance] = useState(0.0001);
+	const [disabled, setDisabled] = useState(true);
+	const [gainRampTimeout, setGainRampTimeout] = useState<ReturnType<typeof setTimeout> | null>(
+		null
+	);
 
-export class ScopeExample extends Component<Props, State> {
-	public state: State = {
-		oscType: "sine",
-		frequency: 440,
-		gain: 0.25,
-		cutoff: 22050,
-		resonance: 0.0001,
-		disabled: true,
-	};
-
-	private audioContext = new AudioContext();
-
-	private oscillatorNode = new OscillatorNode(this.audioContext, {
-		type: this.state.oscType,
-		frequency: this.state.frequency,
-	});
-
-	private filterNode = new BiquadFilterNode(this.audioContext, {
-		type: "lowpass",
-		frequency: this.state.cutoff,
-		Q: this.state.resonance,
-	});
-
-	private gainNode = new GainNode(this.audioContext, {
-		gain: this.state.gain,
-	});
-
-	private analyserNode = new AnalyserNode(this.audioContext, {
+	const audioContext = useAudio();
+	const analyserNode = useAnalyserNode({
 		smoothingTimeConstant: 1,
 		fftSize: 32768,
 	});
 
-	private gainRampTimeout: ReturnType<typeof setTimeout> | null = null;
+	const filterNode = useBiquadFilterNode({
+		type: "lowpass",
+		frequency: cutoff,
+		Q: resonance,
+	});
 
-	constructor(props: Props) {
-		super(props);
-		this.oscillatorNode.start();
-	}
+	const gainNode = useGainNode({
+		gain,
+	});
 
-	componentWillUnmount(): void {
-		this.suspendAudio();
-	}
+	const oscillatorNode = useOscillatorNode({
+		type: oscType,
+		frequency,
+	});
 
-	handleOscType: ChangeEventHandler<HTMLSelectElement> = (event) => {
+	useEffect(() => {
+		audioContext.suspend();
+		oscillatorNode.start();
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+	const handleOscType: ChangeEventHandler<HTMLSelectElement> = (event) => {
 		const oscType = event.target.value as OscillatorType;
-		this.oscillatorNode.type = oscType;
-		this.setState(() => {
-			return { oscType };
-		});
+		oscillatorNode.type = oscType;
+		setOscType(oscType);
 	};
 
-	handleFrequency: ChangeEventHandler<HTMLInputElement> = (event) => {
+	const handleFrequency: ChangeEventHandler<HTMLInputElement> = (event) => {
 		const value = parseFloat(event.target.value);
 		if (isNaN(value)) return;
-		this.oscillatorNode.frequency.value = value;
-		this.setState(() => {
-			return { frequency: value };
-		});
+		oscillatorNode.frequency.value = value;
+		setFrequency(value);
 	};
 
-	handleCutoff: ChangeEventHandler<HTMLInputElement> = (event) => {
+	const handleCutoff: ChangeEventHandler<HTMLInputElement> = (event) => {
 		const value = parseFloat(event.target.value);
 		if (isNaN(value)) return;
-		this.filterNode.frequency.value = value;
-		this.setState(() => {
-			return { cutoff: value };
-		});
+		filterNode.frequency.value = value;
+		setCutoff(value);
 	};
 
-	handleResonance: ChangeEventHandler<HTMLInputElement> = (event) => {
+	const handleResonance: ChangeEventHandler<HTMLInputElement> = (event) => {
 		const value = parseFloat(event.target.value);
 		if (isNaN(value)) return;
-		this.filterNode.Q.value = value;
-		this.setState(() => {
-			return { resonance: value };
-		});
+		filterNode.Q.value = value;
+		setResonance(value);
 	};
 
-	handleGain: ChangeEventHandler<HTMLInputElement> = (event) => {
+	const handleGain: ChangeEventHandler<HTMLInputElement> = (event) => {
 		const value = parseFloat(event.target.value);
 		if (isNaN(value)) return;
-		this.gainNode.gain.value = value;
-		this.setState(() => {
-			return { gain: value };
-		});
+		gainNode.gain.value = value;
+		setGain(value);
 	};
 
-	handleToggle: MouseEventHandler<HTMLButtonElement> = () => {
-		this.setState((state) => {
-			const disabled = !state.disabled;
+	const handleToggle: MouseEventHandler<HTMLButtonElement> = () => {
+		setDisabled((previous) => {
+			const disabled = !previous;
 			if (disabled) {
-				this.suspendAudio();
+				suspendAudio();
 			} else {
-				this.resumeAudio();
+				resumeAudio();
 			}
-			return { disabled };
+			return disabled;
 		});
 	};
 
-	resumeAudio() {
-		if (this.gainRampTimeout) {
-			clearTimeout(this.gainRampTimeout);
+	function resumeAudio() {
+		if (gainRampTimeout) {
+			clearTimeout(gainRampTimeout);
 		} else {
-			this.audioContext.resume();
-			this.oscillatorNode.connect(this.filterNode);
-			this.filterNode.connect(this.gainNode);
-			this.gainNode.connect(this.analyserNode);
-			this.analyserNode.connect(this.audioContext.destination);
+			audioContext.resume();
+			oscillatorNode.connect(filterNode);
+			filterNode.connect(gainNode);
+			gainNode.connect(analyserNode);
+			analyserNode.connect(audioContext.destination);
 		}
-		this.gainNode.gain.exponentialRampToValueAtTime(
-			this.state.gain,
-			this.audioContext.currentTime + 1
-		);
+		gainNode.gain.exponentialRampToValueAtTime(gain, audioContext.currentTime + 1);
 	}
 
-	suspendAudio() {
+	function suspendAudio() {
 		// Note: A value of 0.01 was used for the value to ramp down to in the last
 		// function rather than 0, as an invalid or illegal string error is thrown if
 		// 0 is used — the value needs to be positive.
 		// https://developer.mozilla.org/en-US/docs/Web/API/AudioParam/exponentialRampToValueAtTime#examples
-		this.gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 1);
-		// Need to be able to clear this if it gets re-toggled quickly
-		this.gainRampTimeout = setTimeout(() => {
-			this.audioContext.suspend();
-			this.oscillatorNode.disconnect(this.filterNode);
-			this.filterNode.disconnect(this.gainNode);
-			this.gainNode.disconnect(this.analyserNode);
-			this.analyserNode.disconnect(this.audioContext.destination);
-			this.gainRampTimeout = null;
-		}, 1500);
-	}
-
-	render() {
-		return (
-			<main className="container">
-				<section>
-					<header className="heading">
-						<h2>Oscilloscope</h2>
-					</header>
-
-					<div className="card row">
-						<div className="col">
-							<div className="scope">
-								<Scope
-									width={this.props.width}
-									height={this.props.height}
-									analyserNode={this.analyserNode}
-									disabled={this.state.disabled}
-								/>
-							</div>
-
-							<button onClick={this.handleToggle}>
-								{this.state.disabled ? "Turn On" : "Turn Off"}
-							</button>
-						</div>
-
-						<form className="col controls">
-							<fieldset>
-								<legend>Voice Parameters</legend>
-
-								<p>
-									<select id="osc-type" onChange={this.handleOscType} value={this.state.oscType}>
-										<option value="sine">Sine</option>
-										<option value="square">Square</option>
-										<option value="sawtooth">Sawtooth</option>
-										<option value="triangle">Triangle</option>
-									</select>
-									<label htmlFor="osc-type" className="sr-only">
-										Oscillator Type
-									</label>
-								</p>
-
-								<p>
-									<Slider
-										id="frequency"
-										label="Frequency"
-										min={110}
-										max={1760}
-										step={1}
-										value={this.state.frequency}
-										onChange={this.handleFrequency}
-										srOnly={`value ${this.state.frequency} Hz`}
-									/>
-								</p>
-
-								<p>
-									<Slider
-										id="gain"
-										label="Input Gain"
-										min={0.01}
-										max={1}
-										step={0.05}
-										value={this.state.gain}
-										onChange={this.handleGain}
-										srOnly={`value ${Math.floor(this.state.gain * 100)}`}
-									/>
-								</p>
-
-								<p>
-									<Slider
-										id="cutoff"
-										label="Filter Cutoff Frequency"
-										min={10}
-										max={22050}
-										step={0.1}
-										value={this.state.cutoff}
-										onChange={this.handleCutoff}
-										srOnly={`value ${this.state.cutoff} Hz`}
-									/>
-								</p>
-
-								<p>
-									<Slider
-										id="resonance"
-										label="Filter Q"
-										min={0.0001}
-										max={50}
-										step={0.0001}
-										value={this.state.resonance}
-										onChange={this.handleResonance}
-										srOnly={`value ${Math.floor(this.state.resonance * 100) / 100}`}
-									/>
-								</p>
-							</fieldset>
-						</form>
-					</div>
-				</section>
-			</main>
+		gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1);
+		setGainRampTimeout(
+			setTimeout(() => {
+				audioContext.suspend();
+				oscillatorNode.disconnect(filterNode);
+				filterNode.disconnect(gainNode);
+				gainNode.disconnect(analyserNode);
+				analyserNode.disconnect(audioContext.destination);
+				setGainRampTimeout(null);
+			}, 1500)
 		);
 	}
+
+	return (
+		<main className="container">
+			<section>
+				<header className="heading">
+					<h2>Oscilloscope</h2>
+				</header>
+
+				<div className="card row">
+					<div className="col">
+						<div className="scope">
+							<Scope
+								width={props.width}
+								height={props.height}
+								analyserNode={analyserNode}
+								disabled={disabled}
+							/>
+						</div>
+
+						<button onClick={handleToggle}>{disabled ? "Turn On" : "Turn Off"}</button>
+					</div>
+
+					<form className="col controls">
+						<fieldset>
+							<legend>Voice Parameters</legend>
+
+							<p>
+								<select id="osc-type" onChange={handleOscType} value={oscType}>
+									<option value="sine">Sine</option>
+									<option value="square">Square</option>
+									<option value="sawtooth">Sawtooth</option>
+									<option value="triangle">Triangle</option>
+								</select>
+								<label htmlFor="osc-type" className="sr-only">
+									Oscillator Type
+								</label>
+							</p>
+
+							<p>
+								<Slider
+									id="frequency"
+									label="Frequency"
+									min={110}
+									max={1760}
+									step={1}
+									value={frequency}
+									onChange={handleFrequency}
+									srOnly={`value ${frequency} Hz`}
+								/>
+							</p>
+
+							<p>
+								<Slider
+									id="gain"
+									label="Input Gain"
+									min={0.01}
+									max={1}
+									step={0.05}
+									value={gain}
+									onChange={handleGain}
+									srOnly={`value ${Math.floor(gain * 100)}`}
+								/>
+							</p>
+
+							<p>
+								<Slider
+									id="cutoff"
+									label="Filter Cutoff Frequency"
+									min={10}
+									max={22050}
+									step={0.1}
+									value={cutoff}
+									onChange={handleCutoff}
+									srOnly={`value ${cutoff} Hz`}
+								/>
+							</p>
+
+							<p>
+								<Slider
+									id="resonance"
+									label="Filter Q"
+									min={0.0001}
+									max={50}
+									step={0.0001}
+									value={resonance}
+									onChange={handleResonance}
+									srOnly={`value ${Math.floor(resonance * 100) / 100}`}
+								/>
+							</p>
+						</fieldset>
+					</form>
+				</div>
+			</section>
+		</main>
+	);
 }

@@ -1,8 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { ScopeExample } from "../components/scope-example";
+import { HomePage } from "../components/home-page";
 ---
 
 <Layout title="@bitmachina/scope">
-	<ScopeExample client:only width={256} height={256} />
+	<HomePage client:only />
 </Layout>

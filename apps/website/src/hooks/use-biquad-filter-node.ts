@@ -1,9 +1,9 @@
 import { useRef } from "react";
 
-import { useAudioContext } from "./use-audio-context.js";
+import { useAudio } from "../contexts/audio.js";
 
 export function useBiquadFilterNode(options: BiquadFilterOptions): BiquadFilterNode {
-	const audioContext = useAudioContext();
+	const audioContext = useAudio();
 	const ref = useRef<BiquadFilterNode | null>(null);
 
 	const getInstance = (): BiquadFilterNode => {
