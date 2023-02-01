@@ -13,16 +13,16 @@
 
 .card {
 	background: var(--surface-2);
-	border-radius: var(--radius-3);
 	padding: var(--size-fluid-3);
 	box-shadow: var(--shadow-4);
 
-	&:hover {
-		box-shadow: var(--shadow-6);
+	@media (prefers-reduced-motion: no-preference) {
+		animation: var(--animation-fade-in);
 	}
 
-	@media (--motionOK) {
-		animation: var(--animation-fade-in);
+	@media (width >= 768px) {
+		border-radius: var(--radius-3);
+		flex-direction: row;
 	}
 }
 
@@ -36,6 +36,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-5) var(--size-8);
+
 	@media (width >= 768px) {
 		flex-direction: row;
 	}
@@ -51,10 +52,12 @@
 	display: flex;
 	justify-content: center;
 	margin-top: var(--size-2);
+
 	& canvas {
 		overflow: hidden;
 		border-color: transparent;
 		border-radius: var(--radius-3);
+		box-shadow: var(--shadow-2);
 	}
 }
 
