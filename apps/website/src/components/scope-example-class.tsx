@@ -3,7 +3,7 @@ import { Component, type MouseEventHandler, type ChangeEventHandler } from "reac
 
 import "../styles/scope.css";
 
-import { Slider } from "../components/slider";
+import { Slider } from "./slider";
 
 type Props = {
 	width: number;
