@@ -1,0 +1,33 @@
+{
+	"name": "@bitmachina/canvas",
+	"version": "0.1.0",
+	"author": "John Hooks <bitmachina@outlook.com> (https://johnhooks.io/)",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"build:pkg": "../../scripts/build-pkg.js",
+		"build:esm": "../../scripts/esm.js",
+		"build:compile": "../../scripts/compile.js",
+		"build:types": "../../scripts/build-types.js",
+		"check": "tsc --build ./src && tsc --project ./tests",
+		"clean": "rimraf ./{dist,temp}",
+		"clean:all": "yarn clean && yarn clean:tsc",
+		"clean:tsc": "rimraf ./build"
+	},
+	"type": "module",
+	"sideEffects": false,
+	"exports": "./dist/index.js",
+	"source": "src/index.ts",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist/"
+	],
+	"dependencies": {
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
+	},
+	"devDependencies": {
+		"@types/react": "18.0.27",
+		"@types/react-dom": "18.0.10"
+	}
+}

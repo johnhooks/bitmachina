@@ -7,7 +7,7 @@ if (!process.env.CI) {
 }
 
 try {
-	await exec("npm", ["run", "build:tsc"]);
+	await exec("npm", ["run", "build:compile"]);
 	await exec("npm", ["run", "build:esm"]);
 	await exec("npm", ["run", "build:types"]);
 } catch (code) {

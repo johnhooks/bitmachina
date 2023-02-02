@@ -41,7 +41,7 @@ module.exports = {
 		"import/resolver": {
 			typescript: {
 				alwaysTryTypes: true,
-				project: ["./apps/website", "./packages/scope"],
+				project: ["./apps/website", "./"],
 			},
 		},
 	},

@@ -1,0 +1,31 @@
+{
+	"name": "@bitmachina/visual",
+	"version": "0.1.0",
+	"author": "John Hooks <bitmachina@outlook.com> (https://johnhooks.io/)",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"build": "vite build",
+		"check": "tsc --build ./src && tsc --project ./tests",
+		"clean": "rimraf ./{dist,temp}",
+		"clean:all": "yarn clean"
+	},
+	"type": "module",
+	"sideEffects": false,
+	"exports": "./dist/visual.js",
+	"source": "src/index.ts",
+	"types": "index.d.ts",
+	"files": [
+		"dist/"
+	],
+	"dependencies": {
+		"@bitmachina/canvas": "*",
+		"three": "^0.149.0",
+		"twgl.js": "^5.3.0"
+	},
+	"devDependencies": {
+		"@types/three": "^0.149.0",
+		"vite": "4.0.4",
+		"vite-plugin-glsl": "^1.1.2"
+	}
+}

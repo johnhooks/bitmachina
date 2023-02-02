@@ -1,0 +1,3 @@
+[submodule "packages/visual/glsl/lygia"]
+	path = packages/visual/glsl/lygia
+	url = https://github.com/patriciogonzalezvivo/lygia.git

@@ -10,6 +10,11 @@
 		"**/node_modules": true,
 		"**/tsconfig.tsbuildinfo": true
 	},
+	"files.associations": {
+    "*.glsl": "glslx",
+    "*.vert": "glslx",
+    "*.frag": "glslx"
+  },
 	"search.exclude": {
 		"build/**": true,
 		"dist/**": true,

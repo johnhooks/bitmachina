@@ -27,7 +27,9 @@
 		"newLine": "lf",
 
 		"paths": {
-			"@bitmachina/scope": ["./packages/scopes/src/index.ts"]
+			"@bitmachina/canvas": ["./packages/canvas/src/index.ts"],
+			"@bitmachina/scope": ["./packages/scope/src/index.ts"],
+			"@bitmachina/visual": ["./packages/visual/src/index.ts"]
 		}
 	}
 }
