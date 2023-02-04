@@ -6,8 +6,8 @@
 	"private": true,
 	"scripts": {
 		"build:pkg": "../../scripts/build-pkg.js",
-		"build:esm": "../../scripts/esm.js",
-		"build:compile": "../../scripts/compile.js",
+		"build:esm": "../../scripts/build-esm.js",
+		"build:compile": "../../scripts/build-compile.js",
 		"build:types": "../../scripts/build-types.js",
 		"check": "tsc --build ./src && tsc --project ./tests",
 		"clean": "rimraf ./{dist,temp}",
